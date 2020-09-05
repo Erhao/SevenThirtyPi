@@ -14,7 +14,7 @@ def init_scheduler():
         初始化定时任务
     """
     scheduler = BackgroundScheduler()
-    scheduler.add_job(upload_img_to_qiniu, 'cron', second='0, 10, 20, 30, 40 , 50')
+    scheduler.add_job(upload_img_to_qiniu, 'cron', minute='0, 30')
     scheduler.add_job(clean_img_trash, 'cron', hour=0)
 
     scheduler.start()

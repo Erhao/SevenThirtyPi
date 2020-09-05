@@ -18,5 +18,9 @@ class Config():
     CAMERA_ID = '01'
     PLANT_ID = '01'
 
+    def __init__(self):
+        if not os.path.exists(self.STATIC_DIR):
+            os.mkdir(self.STATIC_DIR)
+
 
 stpi_config = Config()

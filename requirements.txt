@@ -6,6 +6,7 @@ fastapi==0.61.1
 h11==0.9.0
 httptools==0.1.1
 idna==2.10
+picamera==1.13
 pydantic==1.6.1
 PyJWT==1.7.1
 pytz==2020.1

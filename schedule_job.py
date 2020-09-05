@@ -7,9 +7,10 @@ import qiniu.config
 import jwt
 import requests
 import json
+import hashlib
 
 from datetime import datetime, timedelta
-# from picamera import PiCamera
+from picamera import PiCamera
 from stpi_config import stpi_config
 from local_config import local_conf
 from qiniu import Auth, put_file, etag
@@ -47,13 +48,20 @@ def generate_img_file_name(now):
     """
     time_pointer = get_time_pointer(now.hour, now.minute)
 
+    # 获取随机摘要值切片
+    md5 = hashlib.md5()
+    md5.update((now.strftime("%Y%m%d_%H%M%S_") + time_pointer + '_stpenc').encode('utf-8'))
+    hash_slice = md5.hexdigest()[:6]
+
     return 'STP_v01_' + \
         now.strftime("%Y%m%d_%H%M%S") + \
         '_' + \
         stpi_config.CAMERA_ID + \
         stpi_config.PLANT_ID + \
         '_' + \
-        time_pointer
+        time_pointer + \
+        '_' + \
+        hash_slice
 
 
 def take_photo():
@@ -65,12 +73,13 @@ def take_photo():
     img_file_name = generate_img_file_name(now)
 
     full_file_name = path + '/' + img_file_name + '.jpg'
-    # camera = PiCamera()
-    # camera.start_preview()
-    # # 在拍照之前需要至少留给传感器2秒感光
-    # time.sleep(5)
-    # camera.capture(full_file_name)
-    # camera.stop_preview()
+    camera = PiCamera()
+    camera.start_preview()
+    # 在拍照之前需要至少留给传感器2秒感光
+    time.sleep(4)
+    camera.capture(full_file_name)
+    camera.stop_preview()
+    camera.close()
     return now, img_file_name + '.jpg', full_file_name
 
 
@@ -97,14 +106,14 @@ def upload_img_to_qiniu():
     # 生成上传 Token，可以指定过期时间等
     token = q.upload_token(bucket_name, key, 3600)
     # 要上传文件的本地路径
-    # localfile = full_file_name
-    localfile = "/Users/xinyu/playground/SevenThirtyPi/static/2020_09_03/STP_v01_20200903_184750_0101_37.jpg"
+    localfile = full_file_name
 
     ret, info = put_file(token, key, localfile)
     if info.status_code != 200 or ret['key'] != key:
         return
+
     # 在STP数据库写入数据
-    img_url = 'http://seven-thirty-mini.xinyu1997.tech/SF_v1_2020-02-25_11-26-12.jpg'
+    img_url = local_conf.qiniu['cdn_prefix'] + key
     stp_token = generate_stp_token(stpi_config.CAMERA_ID, now.strftime("%Y_%m_%d %H:%M:%S"))
     payload = {
         "token": str(stp_token, encoding='utf-8'),
