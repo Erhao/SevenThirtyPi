@@ -74,6 +74,8 @@ def take_photo():
 
     full_file_name = path + '/' + img_file_name + '.jpg'
     camera = PiCamera()
+    # 调整分辨率以节约七牛存储空间, camera原始大小3280*2464
+    camera.resolution = (3280, 616)
     camera.start_preview()
     # 在拍照之前需要至少留给传感器2秒感光
     time.sleep(4)
