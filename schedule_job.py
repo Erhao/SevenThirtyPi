@@ -126,6 +126,7 @@ def upload_img_to_qiniu():
     # TODO(mbz): catch result
     return
 
+
 def clean_img_trash():
     """
         每天0️点删除static目录下三天之前的目录
