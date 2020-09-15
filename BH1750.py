@@ -6,19 +6,21 @@
 # it's valid looks like following:
 """
      0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
-00:          -- -- -- -- -- -- -- -- -- -- -- -- -- 
-10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-20: -- -- -- 23 -- -- -- -- -- -- -- -- -- -- -- -- 
-30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-40: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
-70: -- -- -- -- -- -- -- --                         
+00:          -- -- -- -- -- -- -- -- -- -- -- -- --
+10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+20: -- -- -- 23 -- -- -- -- -- -- -- -- -- -- -- --
+30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+40: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+70: -- -- -- -- -- -- -- --
 """
 
 import smbus2
 import time
 import RPi.GPIO as GPIO
+
+from datetime import datetime
 
 GPIO.setmode(GPIO.BOARD)
 
@@ -102,7 +104,7 @@ class BH1750():
         self.power_down()
 
     def get_result(self):
-        """ Return current measurement result in lx. """   
+        """ Return current measurement result in lx. """
         data = self.bus.read_word_data(self.addr, self.mode)
         count = data >> 8 | (data&0xff)<<8
         mode2coeff =  2 if (self.mode & 0x03) == 0x01 else 1
@@ -114,7 +116,7 @@ class BH1750():
         time.sleep(basetime * (self.mtreg/69.0) + additional)
 
     def do_measurement(self, mode, additional_delay=0):
-        """ 
+        """
         Perform complete measurement using command
         specified by parameter mode with additional
         delay specified in parameter additional_delay.
@@ -160,14 +162,14 @@ def close_led():
 
 
 def auto_light():
+    # 只在06:01至23:31检测光强
+    hour_range = range(7, 23)
     while True:
-        light_intensity = get_light_intensity()
-        if light_intensity['HighRes'] < 150:
-            open_led()
-        elif light_intensity['HighRes'] >= 150:
-            close_led()
-        time.sleep(0.1)
-
-
-if __name__=="__main__":
-    auto_light()
+        now = datetime.now()
+        if now.hour in hour_range or now.hour == 6 and now.minute >= 1 or now.hour == 23 and now.minute <= 31:
+            light_intensity = get_light_intensity()
+            if light_intensity['HighRes'] < 150:
+                open_led()
+            elif light_intensity['HighRes'] >= 150:
+                close_led()
+        time.sleep(600)

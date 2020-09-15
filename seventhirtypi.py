@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 
+from multiprocessing import process
 from typing import Optional
 from fastapi import FastAPI
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -7,6 +8,7 @@ from schedule_job import upload_img_to_qiniu, clean_img_trash
 from mqtt import sub_watering_cmd
 from local_config import local_conf
 from multiprocessing import  Process
+from BH1750 import auto_light
 
 
 app = FastAPI()
@@ -15,6 +17,10 @@ app = FastAPI()
 # 另起进程订阅MQTT消息
 sub_mqtt_process = Process(target=sub_watering_cmd)
 sub_mqtt_process.start()
+
+# 另起进程自动补光
+auto_light_process = Process(target=auto_light)
+auto_light_process.start()
 
 
 @app.on_event('startup')
