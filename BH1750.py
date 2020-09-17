@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 # Inspired by http://www.raspberrypi-spy.co.uk/2015/03/bh1750fvi-i2c-digital-light-intensity-sensor/
 
 # sensor: GY-30
@@ -24,7 +26,7 @@ from datetime import datetime
 
 GPIO.setmode(GPIO.BOARD)
 
-led_pin = 40
+led_pin = 35
 GPIO.setup(led_pin, GPIO.OUT)
 
 
