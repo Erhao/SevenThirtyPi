@@ -5,7 +5,7 @@ from typing import Optional
 from fastapi import FastAPI
 from apscheduler.schedulers.background import BackgroundScheduler
 from schedule_job import upload_img_to_qiniu, clean_img_trash
-from mqtt import sub_watering_cmd, pub_soil_moisture
+from mqtt_jobs import sub_watering_cmd, pub_soil_moisture
 from local_config import local_conf
 from multiprocessing import Process
 from BH1750 import auto_light
