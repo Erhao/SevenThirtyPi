@@ -174,4 +174,6 @@ def auto_light():
                 open_led()
             elif light_intensity['HighRes'] >= 150:
                 close_led()
+        else:
+            close_led()
         time.sleep(600)

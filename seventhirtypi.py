@@ -5,7 +5,7 @@ from typing import Optional
 from fastapi import FastAPI
 from apscheduler.schedulers.background import BackgroundScheduler
 from schedule_job import upload_img_to_qiniu, clean_img_trash
-from mqtt_jobs import sub_watering_cmd, pub_soil_moisture
+from mqtt_jobs import sub_watering_cmd, pub_soil_moisture, pub_temp_humi
 from local_config import local_conf
 from multiprocessing import Process
 from BH1750 import auto_light
@@ -34,6 +34,9 @@ def init_scheduler():
     # 检测土壤湿度并上报
     scheduler.add_job(pub_soil_moisture, 'cron', minute='0, 10, 20, 30, 40, 50')
     # scheduler.add_job(pub_soil_moisture, 'cron', second='0')
+    # 检测空气温湿度并上报
+    scheduler.add_job(pub_temp_humi, 'cron', minute='1, 11, 21, 31, 41, 51')
+    # scheduler.add_job(pub_temp_humi, 'cron', second='10')
 
     scheduler.start()
 
