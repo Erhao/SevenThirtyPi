@@ -32,8 +32,8 @@ def init_scheduler():
     scheduler.add_job(upload_img_to_qiniu, 'cron', minute='0, 30')
     scheduler.add_job(clean_img_trash, 'cron', hour=0)
     # 检测土壤湿度并上报
-    # scheduler.add_job(pub_soil_moisture, 'cron', minute='0, 10, 20, 30, 40, 50')
-    scheduler.add_job(pub_soil_moisture, 'cron', second='0, 10, 20, 30, 40, 50')
+    scheduler.add_job(pub_soil_moisture, 'cron', minute='0, 10, 20, 30, 40, 50')
+    # scheduler.add_job(pub_soil_moisture, 'cron', second='0')
 
     scheduler.start()
 

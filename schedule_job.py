@@ -16,14 +16,6 @@ from local_config import local_conf
 from qiniu import Auth, put_file, etag
 
 
-# 设置定时器
-def print_time():
-    """
-        打印时间, 测试apscheduler
-    """
-    print("当前时间：", datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3])
-
-
 def generate_img_path(now):
     """
         获取照片的存储路径
@@ -75,7 +67,7 @@ def take_photo():
     full_file_name = path + '/' + img_file_name + '.jpg'
     camera = PiCamera()
     # 调整分辨率以节约七牛存储空间, camera原始大小3280*2464
-    camera.resolution = (820, 616)
+    camera.resolution = (1640, 1232)
     camera.start_preview()
     # 在拍照之前需要至少留给传感器2秒感光
     time.sleep(4)

@@ -14,5 +14,5 @@ GPIO.setup(relay_pin, GPIO.OUT)
 
 def start_watering():
     GPIO.output(relay_pin, 1)
-    time.sleep(10)
+    time.sleep(15)
     GPIO.output(relay_pin, 0)
