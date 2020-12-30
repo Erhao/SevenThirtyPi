@@ -17,9 +17,8 @@ from qiniu import Auth, put_file, etag
 
 
 def generate_img_path(now):
-    """
-        获取照片的存储路径
-    """
+    """ 获取照片的存储路径 """
+
     cur_path = now.strftime("%Y_%m_%d")
     abs_path = os.path.join(stpi_config.STATIC_DIR, cur_path)
     if not os.path.exists(abs_path):
@@ -28,16 +27,14 @@ def generate_img_path(now):
 
 
 def get_time_pointer(hour, minute):
-    """
-        根据当前时间获取time_pointer, 范围为00~47
-    """
+    """ 根据当前时间获取time_pointer, 范围为00~47 """
+
     return '0' + str(hour * 2 + (0 if minute < 30 else 1)) if hour * 2 + (0 if minute < 30 else 1) < 10 else str(hour * 2 + (0 if minute < 30 else 1))
 
 
 def generate_img_file_name(now):
-    """
-        获取图片文件名
-    """
+    """ 获取图片文件名 """
+
     time_pointer = get_time_pointer(now.hour, now.minute)
 
     # 获取随机摘要值切片
@@ -57,9 +54,8 @@ def generate_img_file_name(now):
 
 
 def take_photo():
-    """
-        定时拍照任务
-    """
+    """ 定时拍照任务 """
+
     now = datetime.now()
     path = generate_img_path(now)
     img_file_name = generate_img_file_name(now)
@@ -78,9 +74,8 @@ def take_photo():
 
 
 def generate_stp_token(camera_id, dt):
-    """
-        生成请求STP SERVER的token
-    """
+    """ 生成请求STP SERVER的token """
+
     sign_data = {
         "camera_id": camera_id,
         "datetime": dt
@@ -90,6 +85,8 @@ def generate_stp_token(camera_id, dt):
 
 
 def upload_img_to_qiniu():
+    """ 上传照片到七牛 """
+
     now, file_name, full_file_name = take_photo()
     # 构建鉴权对象
     q = Auth(local_conf.qiniu['AccessKey'], local_conf.qiniu['SecretKey'])
@@ -120,9 +117,8 @@ def upload_img_to_qiniu():
 
 
 def clean_img_trash():
-    """
-        每天0️点删除static目录下三天之前的目录
-    """
+    """ 每天0️点删除static目录下三天之前的目录 """
+
     three_days_ago_path = os.path.join(stpi_config.STATIC_DIR, (datetime.now() + timedelta(days=-3)).strftime('%Y_%m_%d'))
     if os.path.exists(three_days_ago_path):
         shutil.rmtree(three_days_ago_path)

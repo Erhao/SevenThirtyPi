@@ -26,7 +26,7 @@ class MqttClient():
         if int(stpi_config.PLANT_ID) != int(plant_id) or not timestamp.isdigit():
             return
         now_timestamp = int(time.time())
-        # 2分钟之前的MQTT消息将忽略
+        # 命令时效性限制, 2分钟之前的MQTT消息将忽略
         if now_timestamp - int(timestamp) > 120:
             return
         if payload == local_conf.mqtt_payload['WATERING']:

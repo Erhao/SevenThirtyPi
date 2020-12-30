@@ -10,13 +10,16 @@ from DHT11 import get_temp_humi
 
 
 def sub_watering_cmd():
-    # 启动mqtt监听
+    """ 启动mqtt监听 """
+
     mqtt_cli2 = MqttClient('sub_watering_cmd')
     mqtt_cli2.mqtt_connect()
     mqtt_cli2.mqtt_subscribe(local_conf.mqtt_broker['SUB_WATERING_TOPIC'])
 
 
 def pub_soil_moisture():
+    """ 发布土壤湿度信息 """
+
     mqtt_cli = MqttClient('pub_soil_moisture')
     mqtt_cli.mqtt_connect()
     soil_moisture = detect_dry_or_wet() or '1'
@@ -29,6 +32,8 @@ def pub_soil_moisture():
 
 
 def pub_temp_humi():
+    """ 发布温湿度信息 """
+
     temp, humi = get_temp_humi()
     if not temp and not humi:
         return

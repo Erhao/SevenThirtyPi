@@ -7,9 +7,7 @@ from dataclasses import dataclass
 
 @dataclass
 class Config():
-    """"
-        配置类
-    """
+    """ 配置 """
 
     # 基础配置
     STATIC_DIR = os.path.abspath(os.path.join(os.getcwd(), "static"))
